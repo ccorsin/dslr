@@ -79,20 +79,19 @@ class Analysis:
         self.count = self.ft_count()
         i = 0
         j = 0
-        while i < len(self.data):
+        while i < len(self.data[0]):
             j = 0
             col = []
             while j < self.count:
                 try:
                     float(self.data[0][i])
-                    col.append(float(self.data[i][j]))
+                    col.append(float(self.data[j][i]))
                     j += 1
                 except:
                     j += 1
-            print (col)
             self.columns.append(col)
+            print (len(self.columns[i]))
             i += 1
-        # print (self.columns)
         # self.print_line(' ')
         # self.print_line('Count')
         # self.print_line('Mean')
@@ -107,8 +106,7 @@ class Analysis:
         i = 0
         line_new = '{:>12}  '.format(string)
         while i < self.index:
-            try:
-                float(self.data[0][i])
+            if len(self.columns[i]):
                 if string == ' ':
                     line_new += '{:>12}  '.format('Feature' + str(i + 1))
                 elif string == 'Count':
@@ -128,15 +126,13 @@ class Analysis:
                 elif string == '75%':
                     line_new += '{:>12.6f}  '.format(self.ft_percentile(i, 0.75))
                 i += 1
-            except:
-                i += 1
         print (line_new)
 
 try:
-    df = pd.read_csv('dataset_train.csv', sep=',',header=None)
-    df = df.iloc[1:]
-    df = df.astype(dtype= {11:"float64"})
-    print (df[11].describe())
+    # df = pd.read_csv('dataset_train.csv', sep=',',header=None)
+    # df = df.iloc[1:]
+    # df = df.astype(dtype= {11:"float64"})
+    # print (df[11].describe())
     with open('dataset_train.csv') as f:
         reader = csv.reader(f, delimiter=',')
         next(reader)
