@@ -1,8 +1,10 @@
-import pandas as pd
 import sys
 import math
 import csv
+import os
+import argparse
 import numpy as np
+import pandas as pd
 
 class Analysis:
     def __init__(self, data):
@@ -114,16 +116,24 @@ class Analysis:
             i += 1
         print (line_new)
 
-try:
-    df = pd.read_csv('dataset_train.csv', sep=',',header=None)
-    df = df.iloc[1:]
-    df = df.astype(dtype= {7:"float64"})
-    print (df[7].describe())
-    with open('dataset_train.csv') as f:
-        reader = csv.reader(f, delimiter=',')
-        next(reader)
-        d = list(reader)
-    Analysis(d).analyze()
-except Exception as e:
-    sys.stderr.write(str(e) + '\n')
-    sys.exit()
+args = argparse.ArgumentParser("Statistic description of your data file")
+args.add_argument("file", help="File to descripte", type=str)
+args = args.parse_args()
+
+if os.path.isfile(args.file):
+    try:
+        # df = pd.read_csv('dataset_train.csv', sep=',',header=None)
+        # df = df.iloc[1:]
+        # df = df.astype(dtype= {7:"float64"})
+        # print (df[7].describe())
+        with open(args.file) as f:
+            reader = csv.reader(f, delimiter=',')
+            next(reader)
+            d = list(reader)
+        Analysis(d).analyze()
+    except Exception as e:
+        sys.stderr.write(str(e) + '\n')
+        sys.exit()
+else:
+    sys.stderr.write("Invalid input\n")
+    sys.exit(1)
