@@ -43,6 +43,11 @@ class Analysis:
                 plt.title(self.titles[i])
                 plt.xlabel('Grades')
                 plt.ylabel('Frequencies')
+                plt.axvline(np.mean(house1), color='b', linestyle='dashed', linewidth=2)
+                plt.axvline(np.mean(house2), color='#F1C40F', linestyle='dashed', linewidth=2)
+                plt.axvline(np.mean(house3), color='g', linestyle='dashed', linewidth=2)
+                plt.axvline(np.mean(house4), color='r', linestyle='dashed', linewidth=2)
+                plt.axvline(np.mean(self.clean_data[i].data), color='k', linestyle='dashed', linewidth=2)
                 plt.hist([house1, house2, house3, house4], normed=True)
                 k += 1
             i += 1
