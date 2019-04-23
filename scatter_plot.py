@@ -4,7 +4,6 @@ import csv
 from column_adjusted import *
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
 class Analysis:
     def __init__(self, data):
@@ -28,33 +27,28 @@ class Analysis:
             i += 1
         i = 0
         self.ft_remove_columns(self.clean_data, err)
-        self.houses = self.get_houses()
         self.print_graph()
 
     def print_graph(self):
         i = 1
-        k = 1
         std = []
         labels = []
-        while i < len(self.clean_data):
+        while i < len(self.clean_data) - 1:
             if self.clean_data[i].type == 'Num':
-                house1 = self.get_from_house(self.houses[0], self.clean_data[i])
-                house2 = self.get_from_house(self.houses[1], self.clean_data[i])
-                house3 = self.get_from_house(self.houses[2], self.clean_data[i])
-                house4 = self.get_from_house(self.houses[3], self.clean_data[i])
-                plt.subplot(7, 2, k)
-                plt.title(self.titles[i])
-                plt.xlabel('Grades')
-                plt.ylabel('Frequencies')
-                plt.axvline(np.mean(house1), color='b', linestyle='dashed', linewidth=2)
-                plt.axvline(np.mean(house2), color='#F1C40F', linestyle='dashed', linewidth=2)
-                plt.axvline(np.mean(house3), color='g', linestyle='dashed', linewidth=2)
-                plt.axvline(np.mean(house4), color='r', linestyle='dashed', linewidth=2)
-                plt.axvline(np.mean(self.clean_data[i].data), color='k', linestyle='dashed', linewidth=2)
-                plt.hist([house1, house2, house3, house4], normed=True)
-                k += 1
+                j = i + 1
+                fig = plt.figure(i, figsize=(15, 10))
+                fig.suptitle(self.titles[i])
+                k = 1
+                while j < len(self.clean_data):
+                    if self.clean_data[j].type == 'Num':
+                        plt.subplot(7, 2, k)
+                        plt.scatter(self.clean_data[i].data, self.clean_data[j].data, alpha=0.5)
+                        plt.xlabel(self.titles[i])
+                        plt.ylabel(self.titles[j])
+                    j += 1
+                    k += 1
+                plt.subplots_adjust(hspace = 1)
             i += 1
-        plt.subplots_adjust(hspace = 1)
         plt.show()
 
     def get_titles(self):
@@ -71,15 +65,6 @@ class Analysis:
                 houses.append(self.data[i][1])
             i += 1
         return houses
-
-    def get_from_house(self, name, col):
-        l = []
-        i = 0
-        while i < col.len:
-            if self.clean_data[1].data[i] == name:
-                l.append(col.data[i])
-            i += 1
-        return l
 
     def ft_remove_columns(self, data, errors):
         i = 0
