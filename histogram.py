@@ -1,6 +1,7 @@
 import sys
 import math
 import csv
+from column import *
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -18,21 +19,11 @@ class Analysis:
         return float(i)
 
     def analyze(self):
-        self.columns = []
+        self.clean_data = {}
         self.count = self.ft_max_count()
         i = 0
-        j = 0
         while i < len(self.data[0]):
-            j = 0
-            col = []
-            while j < self.count:
-                try:
-                    float(self.data[0][i])
-                    col.append(float(self.data[j][i]))
-                    j += 1
-                except:
-                    j += 1
-            self.columns.append(col)
+            self.clean_data[i] = Column(self.data, i, self.count, self.titles)
             i += 1
         self.houses = self.get_houses()
         self.print_graph()
@@ -42,21 +33,21 @@ class Analysis:
         k = 1
         std = []
         labels = []
-        while i < len(self.columns):
-            if len(self.columns[i]):
-                house1 = self.get_from_house(self.houses[0], self.columns[i])
-                # house2 = self.get_from_house(self.houses[1], self.columns[i])
-                # house3 = self.get_from_house(self.houses[2], self.columns[i])
-                # house4 = self.get_from_house(self.houses[3], self.columns[i])
+        while i < len(self.clean_data):
+            if self.clean_data[i].type == 'Num':
+                house1 = self.get_from_house(self.houses[0], self.clean_data[i])
+                house2 = self.get_from_house(self.houses[1], self.clean_data[i])
+                house3 = self.get_from_house(self.houses[2], self.clean_data[i])
+                house4 = self.get_from_house(self.houses[3], self.clean_data[i])
                 plt.subplot(7, 2, k)
                 plt.title(self.titles[i])
                 plt.xlabel('Grades')
                 plt.ylabel('Frequencies')
-                # plt.hist([house1, house2, house3, house4], range = (-25000, 11000))
+                plt.hist([house1, house2, house3, house4], normed=True)
                 k += 1
             i += 1
         plt.subplots_adjust(hspace = 1)
-        # plt.show()
+        plt.show()
 
     def get_titles(self):
         with open('dataset_train.csv') as f:
@@ -76,9 +67,9 @@ class Analysis:
     def get_from_house(self, name, col):
         l = []
         i = 0
-        while i < len(col):
-            if self.columns[1][i] == name:
-                l.append(col[i])
+        while i < col.len:
+            if self.clean_data[1].data[i] == name:
+                l.append(col.data[i])
             i += 1
         return l
 
