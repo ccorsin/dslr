@@ -3,6 +3,7 @@ import math
 import csv
 import os
 import argparse
+from column import *
 import numpy as np
 import pandas as pd
 
@@ -10,9 +11,16 @@ class Analysis:
     def __init__(self, data):
         self.data = data
         self.index = len(data[0])
+        self.titles = self.get_titles()
+
+    def get_titles(self):
+        with open('dataset_train.csv') as f:
+            reader = csv.reader(f, delimiter=',')
+            d = list(reader)
+            return d[0]
 
     def ft_count(self, i):
-        return float(len(self.columns[i]))
+        return float(self.clean_data[i].len)
 
     def ft_max_count(self):
         i = 0
@@ -23,35 +31,35 @@ class Analysis:
     def ft_mean(self, j):
         sum = 0
         i = 0
-        while i < len(self.columns[j]):
-            sum += self.columns[j][i]
+        while i < self.clean_data[j].len:
+            sum +=  self.clean_data[j].data[i]
             i += 1
-        return float(sum / len(self.columns[j]))
+        return float(sum / self.clean_data[j].len)
 
     def ft_std(self, j):
         sum = 0
         i = 0
         mean = self.ft_mean(j)
-        while i < len(self.columns[j]):
-            sum += (float(self.columns[j][i]) - mean) * (float(self.columns[j][i]) - mean)
+        while i < self.clean_data[j].len:
+            sum += (self.clean_data[j].data[i] - mean) * (self.clean_data[j].data[i] - mean)
             i += 1
-        return math.sqrt((1 / (len(self.columns[j]) - 1) * sum)) 
+        return math.sqrt((1 / (self.clean_data[j].len - 1) * sum)) 
 
     def ft_min(self, j):
-        mini = self.columns[j][0]
+        mini = self.clean_data[j].data[0]
         i = 0
-        while i < len(self.columns[j]):
-            if self.columns[j][i] < mini:
-                mini = self.columns[j][i]
+        while i < self.clean_data[j].len:
+            if self.clean_data[j].data[i] < mini:
+                mini = self.clean_data[j].data[i]
             i += 1 
         return mini
 
     def ft_max(self, j):
-        maxi = self.columns[j][0]
+        maxi = self.clean_data[j].data[0]
         i = 0
-        while i < len(self.columns[j]):
-            if self.columns[j][i] > maxi:
-                maxi = self.columns[j][i]
+        while i < self.clean_data[j].len:
+            if self.clean_data[j].data[i] > maxi:
+                maxi = self.clean_data[j].data[i]
             i += 1
         return maxi
 
@@ -63,21 +71,12 @@ class Analysis:
 
 
     def analyze(self):
-        self.columns = []
+        self.clean_data = {}
         self.count = self.ft_max_count()
         i = 0
         j = 0
         while i < len(self.data[0]):
-            j = 0
-            col = []
-            while j < self.count:
-                try:
-                    float(self.data[0][i])
-                    col.append(float(self.data[j][i]))
-                    j += 1
-                except:
-                    j += 1
-            self.columns.append(col)
+            self.clean_data[i] = Column(self.data, i, self.count, self.titles)
             i += 1
         self.print_line(' ')
         self.print_line('Count')
@@ -93,8 +92,8 @@ class Analysis:
         i = 0
         line_new = '{:>12}  '.format(string)
         while i < self.index:
-            if len(self.columns[i]):
-                self.columns[i].sort()
+            if self.clean_data[i].type == 'Num':
+                self.clean_data[i].data.sort()
                 if string == ' ':
                     line_new += '{:>12}  '.format('Feature' + str(i + 1))
                 elif string == 'Count':
@@ -108,11 +107,11 @@ class Analysis:
                 elif string == 'Max':
                     line_new += '{:>12.6f}  '.format(self.ft_max(i))
                 elif string == '25%':
-                    line_new += '{:>12.6f}  '.format(self.ft_percentile(self.columns[i], 0.25))
+                    line_new += '{:>12.6f}  '.format(self.ft_percentile(self.clean_data[i].data, 0.25))
                 elif string == '50%':
-                    line_new += '{:>12.6f}  '.format(self.ft_percentile(self.columns[i], 0.5))
+                    line_new += '{:>12.6f}  '.format(self.ft_percentile(self.clean_data[i].data, 0.5))
                 elif string == '75%':
-                    line_new += '{:>12.6f}  '.format(self.ft_percentile(self.columns[i], 0.75))
+                    line_new += '{:>12.6f}  '.format(self.ft_percentile(self.clean_data[i].data, 0.75))
             i += 1
         print (line_new)
 
@@ -124,8 +123,8 @@ if os.path.isfile(args.file):
     try:
         # df = pd.read_csv('dataset_train.csv', sep=',',header=None)
         # df = df.iloc[1:]
-        # df = df.astype(dtype= {7:"float64"})
-        # print (df[7].describe())
+        # df = df.astype(dtype= {11:"float64"})
+        # print (df[11].describe())
         with open(args.file) as f:
             reader = csv.reader(f, delimiter=',')
             next(reader)

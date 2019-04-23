@@ -11,11 +11,12 @@ class Column:
             if self.type == 'Num':
                 try:
                     col.append(float(data[j][i]))
+                    j += 1
                 except:
                     j += 1
             else:
                 col.append((data[j][i]))
-            j += 1
+                j += 1
         self.data = col
         self.len = len(self.data)
         self.name = titles[i]
