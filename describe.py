@@ -66,8 +66,8 @@ class Analysis:
     def ft_percentile(self, sorted_list, percentile):
         position = len(sorted_list) * (percentile)
         mini = sorted_list[math.floor(position)]
-        maxi = sorted_list[math.ceil(position)]
-        return mini + (maxi - mini) * (1 - percentile)
+        maxi = sorted_list[math.floor(position)]
+        return sorted_list[math.floor(position) - 1] + (maxi - mini) * (1 - percentile)
 
 
     def analyze(self):
