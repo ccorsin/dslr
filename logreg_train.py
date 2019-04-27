@@ -34,7 +34,7 @@ class Train:
             cost = []
             thetas = np.zeros((x.shape[1]))
             y = self.is_from_house(house)
-            for i in range(self.iterations):                 
+            for i in range(self.iterations):
                 z = np.dot(x, thetas)
                 h = self.sigmoid(z)
                 j = (1 / m) * (np.dot(-y.T, np.log(h)) - np.dot((1 - y).T, np.log(1 - h)))
@@ -64,7 +64,6 @@ if os.path.isfile(args.file):
     try:
         df = pd.read_csv(args.file, sep=',')
         df = df.dropna()
-        # print(df)
         Train(df, args.iter, args.learning).train()
         
     except Exception as e:
