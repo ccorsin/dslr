@@ -7,6 +7,7 @@ from column import *
 import numpy as np
 import pandas as pd
 import json
+import matplotlib.pyplot as plt
 
 class Train:
     def __init__(self, data, iterations, lr):
@@ -24,23 +25,31 @@ class Train:
         return 1 / (1 + np.exp(-x))
 
     def train(self):
-        x = self.data.loc[:, self.selected_features[1:]]
+        std_deviations, means, x = self.ft_standardize(self.data.loc[:, self.selected_features[2:]])
+        x.insert(0, "t0", self.data.loc[:, 't0'])
+        self.predictions['standard'] = {'std': list(std_deviations), 'mean': list(means)}
+        self.predictions['houses'] = {}
+        m = x.shape[0]
         for house in self.houses:
+            cost = []
             thetas = np.zeros((x.shape[1]))
             y = self.is_from_house(house)
             for i in range(self.iterations):                 
                 z = np.dot(x, thetas)
-                # print(z.shape)
                 h = self.sigmoid(z)
+                j = (1 / m) * (np.dot(-y.T, np.log(h)) - np.dot((1 - y).T, np.log(1 - h)))
+                cost.append(j)
                 gradient = np.dot(x.T, (h - y)) / y.size
                 thetas -= self.lr * gradient
-                # print (h)
-            self.predictions[house] = list(thetas)
+            self.predictions['houses'][house] = list(thetas)
         with open('data.json', 'w+') as json_file:  
-            json.dump(self.predictions, json_file)
+            json.dump(self.predictions,  json_file)
 
     def is_from_house(self, house):
         return np.where(self.data.loc[:, self.selected_features[0]] == house, 1, 0)
+
+    def ft_standardize(self, matrix):
+        return [matrix.std(), matrix.mean(), ((matrix - matrix.mean()) / matrix.std())]
 
 
 
@@ -55,7 +64,7 @@ if os.path.isfile(args.file):
     try:
         df = pd.read_csv(args.file, sep=',')
         df = df.dropna()
-        print(df)
+        # print(df)
         Train(df, args.iter, args.learning).train()
         
     except Exception as e:
