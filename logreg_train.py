@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 class Train:
     def __init__(self, data, iterations, lr, visu):
         data['t0'] = np.ones(data.loc[:, 'Hogwarts House'].shape[0])
-        self.selected_features = ["Hogwarts House",'t0', "Herbology", "Ancient Runes", "Astronomy", "Charms", "Defense Against the Dark Arts"]
+        self.selected_features = ["Hogwarts House",'t0', "Astronomy", "Herbology", "Ancient Runes", "Charms"]
         self.data = data.loc[:, self.selected_features]
         self.lr = lr
         self.visu = visu

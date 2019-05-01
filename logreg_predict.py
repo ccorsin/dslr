@@ -23,23 +23,31 @@ def ft_standardize(matrix, mean, std):
 if __name__ == '__main__':
     args = argparse.ArgumentParser("Predict houses from data")
     args.add_argument("file", help="File to descripte", type=str)
+    args.add_argument("thetas", help="Trained parameters", type=str)
     args = args.parse_args()
     if os.path.isfile(args.file):
         try:
             df = pd.read_csv(args.file, sep=',')
-            json_file = open('data.json')
-            data_json = json.load(json_file)
-            theta_dic = data_json['houses']
+            if os.path.isfile(args.thetas):
+                try:
+                    json_file = open(args.thetas)
+                    data_json = json.load(json_file)
+                    theta_dic = data_json['houses']
+                except Exception as e:
+                    sys.stderr.write("Le fichier n'est pas correct\n")
+                    sys.exit(1)
+            else:
+                sys.stderr.write("Le fichier n'est pas correct\n")
+                sys.exit(1)
         except Exception as e:
             sys.stderr.write("Le fichier n'est pas correct\n")
             sys.exit(1)
     else:
         sys.stderr.write("Le fichier n'est pas correct\n")
         sys.exit(1)
-    # df['t0'] = np.ones(df.loc[:, 'Hogwarts House'].shape[0])
-    df_part = df.loc[: , ["Herbology", "Ancient Runes", "Astronomy", "Charms", "Defense Against the Dark Arts"]]
-    df_part = df_part.dropna()
-    df_part = ft_standardize(df_part.loc[: , ["Herbology", "Ancient Runes", "Astronomy", "Charms", "Defense Against the Dark Arts"]], data_json['standard']['mean'], data_json['standard']['std'])
+    df_part = df.loc[: , ["Astronomy", "Herbology", "Ancient Runes", "Charms"]]
+    df_part.fillna(df_part.median(), inplace=True)
+    df_part = ft_standardize(df_part.loc[: , ["Astronomy", "Herbology", "Ancient Runes", "Charms"]], data_json['standard']['mean'], data_json['standard']['std'])
     df_part.insert(0, 't0', np.ones(df_part.shape[0]))
     predictions = []
     true_result = []
@@ -51,7 +59,6 @@ if __name__ == '__main__':
             predictions.append(prediction(theta_dic, row))
             true_result.append(df.loc[index, 'Hogwarts House'])
             writer.writerow({'Index': index, 'Hogwarts House': prediction(theta_dic, row)})
-    # print(accuracy_score(true_result, predictions))
     
     
     

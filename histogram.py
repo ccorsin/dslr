@@ -51,7 +51,7 @@ class Analysis:
                 plt.axvline(np.mean(house3), color='g', linestyle='dashed', linewidth=2)
                 plt.axvline(np.mean(house4), color='r', linestyle='dashed', linewidth=2)
                 plt.axvline(np.mean(self.clean_data[i].data), color='k', linestyle='dashed', linewidth=2)
-                plt.hist([house1, house2, house3, house4], normed=True)
+                plt.hist([house1, house2, house3, house4], density=True)
                 k += 1
             i += 1
         plt.subplots_adjust(hspace = 1)

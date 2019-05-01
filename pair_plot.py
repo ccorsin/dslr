@@ -14,6 +14,7 @@ try:
     sns.pairplot(df.dropna(), hue = "Hogwarts House")
     plt.tight_layout()
     plt.savefig('pair_plot.pdf')
+    plt.show()
 except Exception as e:
     sys.stderr.write(str(e) + '\n')
     sys.exit()

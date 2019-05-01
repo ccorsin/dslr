@@ -99,23 +99,23 @@ class Analysis:
             if self.clean_data[i].type == 'Num':
                 self.clean_data[i].data.sort()
                 if string == ' ':
-                    line_new += '{:>14}  '.format('Feature' + str(i + 1))
+                    line_new += '{:>15}  '.format('Feature' + str(i + 1))
                 elif string == 'Count':
-                    line_new += '{:>14.6f}  '.format(self.ft_count(i))
+                    line_new += '{:>15.6f}  '.format(self.ft_count(i))
                 elif string == 'Mean':
-                    line_new += '{:>14.6f}  '.format(self.ft_mean(i))
+                    line_new += '{:>15.6f}  '.format(self.ft_mean(i))
                 elif string == 'Std':
-                    line_new += '{:>14.6f}  '.format(self.ft_std(i))
+                    line_new += '{:>15.6f}  '.format(self.ft_std(i))
                 elif string == 'Min':
-                    line_new += '{:>14.6f}  '.format(self.ft_min(i))
+                    line_new += '{:>15.6f}  '.format(self.ft_min(i))
                 elif string == 'Max':
-                    line_new += '{:>14.6f}  '.format(self.ft_max(i))
+                    line_new += '{:>15.6f}  '.format(self.ft_max(i))
                 elif string == '25%':
-                    line_new += '{:>14.6f}  '.format(self.ft_percentile(self.clean_data[i].data, 0.25))
+                    line_new += '{:>15.6f}  '.format(self.ft_percentile(self.clean_data[i].data, 0.25))
                 elif string == '50%':
-                    line_new += '{:>14.6f}  '.format(self.ft_percentile(self.clean_data[i].data, 0.5))
+                    line_new += '{:>15.6f}  '.format(self.ft_percentile(self.clean_data[i].data, 0.5))
                 elif string == '75%':
-                    line_new += '{:>14.6f}  '.format(self.ft_percentile(self.clean_data[i].data, 0.75))
+                    line_new += '{:>15.6f}  '.format(self.ft_percentile(self.clean_data[i].data, 0.75))
             i += 1
         print (line_new)
 
@@ -125,11 +125,6 @@ args = args.parse_args()
 
 if os.path.isfile(args.file):
     try:
-        df = pd.read_csv('dataset_train.csv', sep=',',header=None)
-        df = df.iloc[1:]
-        df = df.astype(dtype= {0:"float64"})
-        value = pd.Series(df[0])
-        print (value.describe())
         with open(args.file) as f:
             reader = csv.reader(f, delimiter=',')
             next(reader)
