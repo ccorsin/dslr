@@ -17,7 +17,6 @@ pair_plot.py
 
 # Logistic regression
 2 programmes :
-deux programmes :
 - un premier qui entraine les modèles : logreg_train.py et prend en paramètre dataset_train.csv.
   . utilise la technique du gradient descent pour minimiser l’erreur
   . le programmegénère un fichier contenant les poids qui seront réutilisés pour la prédiction
